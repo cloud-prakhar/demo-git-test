@@ -33,7 +33,7 @@ steps:
 # Optional: store the output file as a build artifact in GCS
 artifacts:
   objects:
-    location: 'gs://YOUR_BUCKET_NAME/build-artifacts/'
+    location: 'gs://cloudbuild-artifacts-07-12-2026/build-artifacts/'
     paths:
       - 'build-output.txt'
 
