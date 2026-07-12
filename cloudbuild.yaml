@@ -1,0 +1,43 @@
+steps:
+  # Step 1: Simple sanity check — prove the trigger fired and repo checked out
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'sanity-check'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        echo "✅ Trigger fired successfully"
+        echo "Commit SHA: $COMMIT_SHA"
+        echo "Branch: $BRANCH_NAME"
+        echo "Repo: $REPO_NAME"
+        ls -la
+
+  # Step 2: Confirm environment/tools available in the build
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'env-check'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        gcloud config list
+        gcloud auth list
+
+  # Step 3: Optional — touch/write a file to prove artifact handling works
+  - name: 'ubuntu'
+    id: 'write-artifact'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - 'echo "Build ran at $(date)" > build-output.txt && cat build-output.txt'
+
+# Optional: store the output file as a build artifact in GCS
+artifacts:
+  objects:
+    location: 'gs://YOUR_BUCKET_NAME/build-artifacts/'
+    paths:
+      - 'build-output.txt'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+timeout: '600s'
