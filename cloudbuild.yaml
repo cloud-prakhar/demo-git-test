@@ -1,5 +1,6 @@
 steps:
   # Step 1: Simple sanity check — prove the trigger fired and repo checked out
+  ## Triggering new job
   - name: 'gcr.io/cloud-builders/gcloud'
     id: 'sanity-check'
     entrypoint: 'bash'
