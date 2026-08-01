@@ -1,44 +1,16 @@
+substitutions:
+  _REGION: us-central1
+  _REPO: meridian-apps
+  _IMAGE: meridian-web
+  _TAG: latest
+
 steps:
-  # Step 1: Simple sanity check — prove the trigger fired and repo checked out
-  ## Triggering new job
-  - name: 'gcr.io/cloud-builders/gcloud'
-    id: 'sanity-check'
-    entrypoint: 'bash'
+  - name: gcr.io/cloud-builders/docker
     args:
-      - '-c'
-      - |
-        echo "✅ Trigger fired successfully"
-        echo "Commit SHA: $COMMIT_SHA"
-        echo "Branch: $BRANCH_NAME"
-        echo "Repo: $REPO_NAME"
-        ls -la
+      - build
+      - -t
+      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_IMAGE}:${_TAG}
+      - .
 
-  # Step 2: Confirm environment/tools available in the build
-  - name: 'gcr.io/cloud-builders/gcloud'
-    id: 'env-check'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        gcloud config list
-        gcloud auth list
-
-  # Step 3: Optional — touch/write a file to prove artifact handling works
-  - name: 'ubuntu'
-    id: 'write-artifact'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - 'echo "Build ran at $(date)" > build-output.txt && cat build-output.txt'
-
-# Optional: store the output file as a build artifact in GCS Service
-artifacts:
-  objects:
-    location: 'gs://cloudbuild-artifacts-07-12-2026/build-artifacts/'
-    paths:
-      - 'build-output.txt'
-
-options:
-  logging: CLOUD_LOGGING_ONLY
-
-timeout: '600s'
+images:
+  - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_IMAGE}:${_TAG}
