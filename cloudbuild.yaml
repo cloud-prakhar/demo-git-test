@@ -31,7 +31,7 @@ steps:
       - '-c'
       - 'echo "Build ran at $(date)" > build-output.txt && cat build-output.txt'
 
-# Optional: store the output file as a build artifact in GCS
+# Optional: store the output file as a build artifact in GCS Service
 artifacts:
   objects:
     location: 'gs://cloudbuild-artifacts-07-12-2026/build-artifacts/'
